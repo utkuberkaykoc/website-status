@@ -1,6 +1,7 @@
 # Site Monitor | Check Website Status! 🚀  
 
-A powerful Node.js package to check website availability and send optional Discord notifications. Supports scheduled monitoring with custom intervals and loop counts.  
+✅ **Free to use!**
+🌍 A powerful Node.js package to check **website availability** and send **iscord notifications**. Supports **scheduled** monitoring with custom intervals!
 
 ![NPM Version](https://img.shields.io/npm/v/website-status?color=blue&style=flat-square)  
 ![Downloads](https://img.shields.io/npm/dt/website-status?color=green&style=flat-square)  
