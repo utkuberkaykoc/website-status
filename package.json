@@ -1,7 +1,7 @@
 {
   "name": "website-status",
-  "version": "1.0.5",
-  "description": "A powerful Node.js package to check website availability and send optional Discord notifications.",
+  "version": "2.0.0",
+  "description": "A powerful website monitoring tool with response time tracking, speed ratings, batch URL checking, uptime stats, and Discord webhook notifications.",
   "main": "index.js",
   "bin": {
     "site-checker": "./cli.js"

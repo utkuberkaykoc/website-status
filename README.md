@@ -1,122 +1,116 @@
-# Site Monitor | Check Website Status! 🚀  
+# website-status 🌐
 
-✅ **Free to use!**
-🌍 A powerful Node.js package to check **website availability** and send **iscord notifications**. Supports **scheduled** monitoring with custom intervals!
+Website uptime monitor with response time tracking, speed ratings, multi-URL checking, and webhook notifications.
 
-![NPM Version](https://img.shields.io/npm/v/website-status?color=blue&style=flat-square)  
-![Downloads](https://img.shields.io/npm/dt/website-status?color=green&style=flat-square)  
-![License](https://img.shields.io/npm/l/website-status?style=flat-square)  
+## 🚀 What's New in v2.0.0
 
----
+- **Response time tracking** — Precise millisecond measurement for every check
+- **Speed ratings** — Visual indicators: ⚡Fast / ✅Good / 🟡Moderate / 🔴Slow / 💀Unreachable
+- **`checkMultipleUrls()`** — Batch check multiple URLs at once
+- **Status codes** — Full HTTP status code and status text in results
+- **Uptime statistics** — Summary with total checks, online count, uptime percentage
+- **Structured JSON** — All functions return clean, parseable objects
+- **Custom timeout** — Configurable timeout per request (default: 10s)
+- **Fastest/Slowest** — Multi-URL results identify fastest and slowest sites
+- **Better CLI** — New `--multi` and `--timeout` options
 
-## 📦 Installation  
+## 📦 Installation
 
-### Install Globally for CLI Usage  
-```sh
-npm install -g website-status
-```
-
-### Install for Node.js Projects  
-```sh
+```bash
 npm install website-status
 ```
 
----
+## 📋 Usage
 
-## 🚀 Usage  
+### Single URL Check
 
-### 🔍 Check a Single Website Once  
-```sh
-site-checker https://utku.berkaykoc.net
-```
-📌 **Output:**  
-✅ `https://utku.berkaykoc.net is UP!`  
-or  
-❌ `https://utku.berkaykoc.net is DOWN!`  
-
----
-
-## 📢 **Optional Discord Webhook Notifications**  
-If you want to receive a Discord notification when a site is down or up, provide a **Webhook URL**:  
-```sh
-site-checker https://utku.berkaykoc.net https://discord.com/api/webhooks/your-webhook-url
-```
-📌 **If no webhook is provided, it will only print the result in the terminal.**  
-
----
-
-## 🔄 **Scheduled Monitoring (Interval & Loop Count)**  
-You can set a monitoring interval and specify how many times to repeat the check.  
-
-```sh
-site-checker <URL> <Webhook (optional)> <Interval in seconds (optional)> <Loop count (optional)>
-```
-
-### **Rules:**  
-- **If no interval or loop count is given, it runs only once.**  
-- **Minimum interval is 30 seconds.**  
-- **Maximum loop count is 50 times.**  
-
-📌 **Examples:**  
-```sh
-# Check every 30 seconds, repeat 3 times
-site-checker https://utku.berkaykoc.net null 30 3
-
-# Check every 60 seconds, repeat 10 times
-site-checker https://utku.berkaykoc.net null 60 10
-
-# Check every 45 seconds, repeat 5 times, and send Discord notifications
-site-checker https://utku.berkaykoc.net https://discord.com/api/webhooks/your-webhook-url 45 5
-
-# If no interval or loopCount is given, it runs only once
-site-checker https://utku.berkaykoc.net
-```
-
----
-
-## 📜 **Using in a Node.js Project**  
-
-### Install the package  
-```sh
-npm install website-status
-```
-
-### Import the module  
 ```js
 const { isSiteAvailable } = require("website-status");
+
+const result = await isSiteAvailable("https://google.com");
+console.log(result);
+// {
+//   url: "https://google.com",
+//   results: [{ online: true, statusCode: 200, statusText: "OK", responseTime: 85, speed: "⚡ Fast" }],
+//   summary: { total: 1, online: 1, offline: 0, uptime: "100.00%" }
+// }
 ```
 
-### **Check if a site is up (without webhook)**  
+### Continuous Monitoring with Webhook
+
 ```js
-isSiteAvailable("https://example.com");
+const { isSiteAvailable } = require("website-status");
+
+// Check every 30 seconds, 100 times, with Slack webhook
+await isSiteAvailable(
+  "https://mysite.com",
+  "https://hooks.slack.com/services/xxx",
+  30,  // interval in seconds
+  100  // number of checks
+);
 ```
 
-### **Check if a site is up (with webhook)**  
+### Check Multiple URLs
+
 ```js
-isSiteAvailable("https://example.com", "https://discord.com/api/webhooks/your-webhook-url");
+const { checkMultipleUrls } = require("website-status");
+
+const report = await checkMultipleUrls([
+  "https://google.com",
+  "https://github.com",
+  "https://npmjs.com"
+]);
+
+report.results.forEach(site => {
+  console.log(`${site.speed} ${site.url} - ${site.responseTime}ms`);
+});
+
+console.log(`Fastest: ${report.fastest.url}`);
+console.log(`Slowest: ${report.slowest.url}`);
 ```
 
-### **Check a site with custom interval & loop count**  
+### Custom Timeout
+
 ```js
-isSiteAvailable("https://example.com", null, 60, 5); // Check every 60 seconds, 5 times
+const { isSiteAvailable } = require("website-status");
+
+// 5 second timeout
+await isSiteAvailable("https://slow-site.com", null, null, null, { timeout: 5000 });
 ```
 
----
+## 📟 CLI Usage
 
+```bash
+# Single URL
+npx website-status https://google.com
 
-## 🛠️ Contributing  
-Contributions are welcome! Fork the repository, create a branch, make changes, and submit a PR. 🚀  
+# With webhook monitoring
+npx website-status https://mysite.com https://hooks.slack.com/... 30 10
 
----
+# Check multiple URLs
+npx website-status --multi https://google.com https://github.com https://npmjs.com
 
-## 📜 License  
-This project is licensed under the **MIT License**.  
+# Custom timeout
+npx website-status --timeout 5000 https://example.com
+```
 
----
+## 📡 API
 
-## 🌟 Support & Contact  
-- **GitHub Issues:** [Report Bugs or Request Features](https://github.com/utkuberkaykoc/website-status/issues)  
-- **Give a Star:** ⭐ If you like this package, consider giving it a star on GitHub!  
+| Function | Description |
+|----------|-------------|
+| `isSiteAvailable(url, webhook?, interval?, loops?, options?)` | Monitor a single URL |
+| `checkMultipleUrls(urls[], options?)` | Batch check multiple URLs |
 
-🚀 **Happy Coding!** 🎮✨  
+### Speed Ratings
 
+| Rating | Response Time |
+|--------|--------------|
+| ⚡ Fast | < 200ms |
+| ✅ Good | 200-500ms |
+| 🟡 Moderate | 500-1000ms |
+| 🔴 Slow | 1000-3000ms |
+| 💀 Unreachable | > 3000ms or error |
+
+## 📄 License
+
+MIT © Utku Berkay Koç
